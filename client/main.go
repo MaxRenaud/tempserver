@@ -3,10 +3,10 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"flag"
-	"github.com/golang/protobuf/proto"
+	"fmt"
 	"github.com/golang/glog"
+	"github.com/golang/protobuf/proto"
 	"github.com/maxrenaud/tempserver/temp"
 	"net"
 	"os"
@@ -30,9 +30,11 @@ var cfg *config
 
 func main() {
 
-	debugPtr := flag.Bool("debug", false, "Show debug messages");
-	farhenheitPtr := flag.Bool("farhenheit", false, "Use Fahrenheit instead of Celsius")
+	debugPtr := flag.Bool("debug", false, "Show debug messages")
+	fahrenheitPtr := flag.Bool("fahrenheit", false, "Use Fahrenheit instead of Celsius")
 	configPtr := flag.String("config", "client.json", "Path to the config file")
+	configOut := flag.String("out", "human","Output format [human, cacti]")
+
 	flag.Parse()
 	flag.Lookup("logtostderr").Value.Set("true")
 	if *debugPtr {
@@ -81,11 +83,26 @@ func main() {
 	time.Sleep(3 * time.Second)
 	glog.V(1).Infoln("Done sleeping, let's iterate", len(temps))
 	close(temps)
+	temp_map := make(map[string]float32)
 	for t := range temps {
-		if (*farhenheitPtr) {
-			t.temperature = t.temperature*9/5+32
+		if *fahrenheitPtr {
+			t.temperature = t.temperature*9/5 + 32
 		}
-		fmt.Printf("%s: %.2f\n", t.location, t.temperature)
+		temp_map[t.location] = t.temperature
+		//fmt.Printf("%s: %.2f\n", t.location, t.temperature)
+	}
+
+	switch co := *configOut; co {
+	case "human":
+		for location, temperature := range temp_map {
+			fmt.Printf("%s: %.2f\n", location, temperature)
+		}
+	case "cacti":
+		for location, temperature := range temp_map {
+			fmt.Printf("%s:%.2f ", location, temperature)
+		}
+		fmt.Println()
+
 	}
 
 }
