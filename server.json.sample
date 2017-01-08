@@ -1,0 +1,7 @@
+{
+  "name": "Attic",
+  "ipv4_addr": "0.0.0.0",
+  "port": 32431,
+  "sensor": "tempAlert",
+  "sensor_params": ["/dev/ttyUSB0"]
+}

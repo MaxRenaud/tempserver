@@ -1,0 +1,24 @@
+syntax = "proto3";
+package temp;
+
+message Command {
+    enum CommandType {
+        REQUEST = 0;
+        REPLY = 1;
+    }
+
+    CommandType command = 1;
+    Address address = 2;
+    string nodeName = 3;
+    Temperature temperature = 4;
+
+}
+
+message Temperature {
+    float temperature = 1;
+}
+
+message Address {
+    string ipv4 = 1;
+    int32 port = 2;
+}

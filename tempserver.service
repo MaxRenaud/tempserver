@@ -1,0 +1,8 @@
+[Unit]
+Description=TemperatureServer (http://www.github.com/maxrenaud/tempserver)
+
+[Service]
+ExecStart=/usr/local/bin/tempserver -config /etc/tempserver.json
+
+[Install]
+WantedBy=multi-user.target
