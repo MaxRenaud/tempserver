@@ -1,19 +1,19 @@
 package main
 
 import (
+	"encoding/json"
+	"errors"
+	"flag"
 	"fmt"
-	"net"
 	"github.com/golang/glog"
+	"github.com/golang/protobuf/proto"
 	"github.com/maxrenaud/tempserver/temp"
 	"github.com/tarm/serial"
 	"github.com/yryz/ds18b20"
-	"errors"
+	"net"
 	"os"
-	"encoding/json"
-	"github.com/golang/protobuf/proto"
-	"time"
 	"strconv"
-	"flag"
+	"time"
 )
 
 type Sensor interface {
@@ -126,12 +126,12 @@ func sendTemp(address string, port int32) {
 	case "ds18b20":
 		t = &ds18b20_sensor{}
 	case "fake_temp":
-		desired, err  := strconv.ParseFloat(cfg.Sensor_params[0], 32)
+		desired, err := strconv.ParseFloat(cfg.Sensor_params[0], 32)
 		if err != nil {
-			desired = 0.00;
+			desired = 0.00
 		}
 
-		t= &fake_temp{desired: float32(desired)}
+		t = &fake_temp{desired: float32(desired)}
 	}
 	err, temperature := t.getTemp()
 	if err != nil {
